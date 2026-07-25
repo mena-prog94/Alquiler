@@ -1,0 +1,247 @@
+/* Fondo oscuro profundo con un degradado sutil */
+.fondo {
+  --background: linear-gradient(135deg, #090d16 0%, #111827 50%, #1f2937 100%);
+}
+
+/* Cabecera limpia y moderna */
+ion-header {
+  ion-toolbar {
+    --background: #0f172a;
+    --color: #f8fafc;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    ion-title {
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    ion-back-button {
+      color: #f59e0b; /* Color ámbar característico */
+    }
+  }
+}
+
+/* ==========================================
+   TARJETAS PRINCIPALES (GLASSMORPHISM)
+   ========================================== */
+.cliente-card, .financial-card, .contrato-card {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+  overflow: hidden;
+
+  ion-card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 18px 20px;
+
+    &[color="light"] {
+      background: rgba(30, 41, 59, 0.5);
+    }
+  }
+}
+
+/* Encabezado flex para la tarjeta de cliente */
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .cliente-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 4px;
+  }
+
+  ion-card-subtitle {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+}
+
+/* Títulos de sección con icono */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f8fafc;
+
+  .title-icon {
+    color: #f59e0b;
+    font-size: 22px;
+  }
+}
+
+/* ==========================================
+   ELEMENTOS DE DETALLE (ITEMS)
+   ========================================== */
+.detail-item {
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.25s ease;
+
+  ion-icon {
+    font-size: 22px;
+    margin-right: 14px;
+    color: #f59e0b !important;
+  }
+
+  ion-label {
+    margin: 10px 0;
+
+    h3 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    p {
+      font-size: 0.98rem;
+      color: #f8fafc;
+      font-weight: 600;
+    }
+  }
+
+  &:hover {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+}
+
+/* ==========================================
+   RESUMEN DE FACTURA
+   ========================================== */
+.factura-resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .factura-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    span {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    strong {
+      color: #f8fafc;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .price-text {
+      color: #10b981;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+  }
+}
+
+/* ==========================================
+   VISUALIZADOR DE IMAGEN DE CONTRATO
+   ========================================== */
+.image-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0f172a;
+  max-height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .contrato-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+/* ==========================================
+   BOTONES DE ACCIÓN (EDITAR, WHATSAPP, IMPRIMIR)
+   ========================================== */
+ion-button {
+  --border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  height: 48px;
+  letter-spacing: 0.3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Botón Principal (Editar) */
+.no-print > ion-button {
+  --background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --color: #0f172a;
+  --box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+
+  &:hover {
+    box-shadow: 0 12px 25px rgba(245, 158, 11, 0.4);
+  }
+}
+
+/* ==========================================
+   MEDIA QUERY PARA IMPRESIÓN (OCULTAR ELEMENTOS NO NECESARIOS)
+   ========================================== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .fondo {
+    --background: #ffffff !important;
+  }
+
+  .financial-card {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    .factura-row span, .factura-row strong {
+      color: #000000 !important;
+    }
+  }
+}
+
+/* Animación de entrada suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

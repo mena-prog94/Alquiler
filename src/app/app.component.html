@@ -1,3 +1,107 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
+<ion-app >
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>
+        <ion-list id="inbox-list">
+          <ion-list-header>Alquiler</ion-list-header>
+          <ion-note>Sistema de Control Inmobiliario</ion-note>
+
+          <!-- Dashboard -->
+          <ion-menu-toggle [autoHide]="false">
+            <ion-item routerLink="/dashboard" routerLinkActive="active-item" lines="none" detail="false">
+              <ion-icon aria-hidden="true" slot="start" name="grid-outline" color="primary"></ion-icon>
+              <ion-label>Principal</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <!-- Viviendas -->
+          <ion-item button lines="none" detail="false" (click)="toggleViviendasSubmenu()">
+            <ion-icon aria-hidden="true" slot="start" name="home-outline" color="primary"></ion-icon>
+            <ion-label>Viviendas</ion-label>
+            <ion-icon [name]="mostrarViviendasRegistradas ? 'chevron-down-outline' : 'chevron-forward-outline'" slot="end" size="small"></ion-icon>
+          </ion-item>
+
+          <div *ngIf="mostrarViviendasRegistradas" class="submenu-container">
+            <ion-menu-toggle [autoHide]="false">
+              <ion-item routerLink="/vivienda" routerLinkActive="active-item" lines="none" detail="false" class="submenu-item add-new-item">
+                <ion-icon aria-hidden="true" slot="start" name="add-outline"></ion-icon>
+                <ion-label>Registrar Nueva</ion-label> 
+              </ion-item>
+            </ion-menu-toggle>
+            <!-- CORREGIDO: Se quitó '| async' -->
+            <ion-menu-toggle [autoHide]="false" *ngFor="let viv of viviendas">
+              <ion-item [routerLink]="['/viviendas', viv.id]" routerLinkActive="active-item" lines="none" detail="false" class="submenu-item dynamic-item">
+                <ion-icon aria-hidden="true" slot="start" name="business-outline" class="item-icon-sub"></ion-icon>
+                <ion-label>
+                  <h2>{{ viv.codigo }}</h2>
+                  <p>{{ viv.tipo }} — {{ viv.estado }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div> 
+
+          <!-- Clientes -->
+          <ion-item button lines="none" detail="false" (click)="toggleClientesSubmenu()">
+            <ion-icon aria-hidden="true" slot="start" name="people-outline" color="primary"></ion-icon>
+            <ion-label>Clientes</ion-label>
+            <ion-icon [name]="mostrarClientesRegistrados ? 'chevron-down-outline' : 'chevron-forward-outline'" slot="end" size="small"></ion-icon>
+          </ion-item>
+
+          <div *ngIf="mostrarClientesRegistrados" class="submenu-container">
+            <ion-menu-toggle [autoHide]="false">
+              <ion-item routerLink="/cliente/nuevo" routerLinkActive="active-item" lines="none" detail="false" class="submenu-item add-new-item">
+                <ion-icon aria-hidden="true" slot="start" name="person-add-outline"></ion-icon>
+                <ion-label>Registrar Nuevo</ion-label> 
+              </ion-item>
+            </ion-menu-toggle>
+            <!-- CORREGIDO: Se quitó '| async' -->
+            <ion-menu-toggle [autoHide]="false" *ngFor="let cliente of clientes">
+              <ion-item [routerLink]="['/clientes', cliente.id]" routerLinkActive="active-item" lines="none" detail="false" class="submenu-item dynamic-item">
+                <ion-icon aria-hidden="true" slot="start" name="person-outline" class="item-icon-sub"></ion-icon>
+                <ion-label>
+                  <h2>{{ cliente.nombre }}</h2>
+                  <p>{{ cliente.nombreCompleto || 'nombreCompleto' }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div> 
+
+          <!-- Recibos -->
+          <ion-menu-toggle [autoHide]="false">
+            <ion-item routerLink="/recibos" routerLinkActive="active-item" lines="none" detail="false">
+              <ion-icon aria-hidden="true" slot="start" name="receipt-outline" color="primary"></ion-icon>
+              <ion-label>Recibos</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <!-- Mi perfil -->
+          <ion-menu-toggle [autoHide]="false">
+            <ion-item routerLink="/perfil" routerLinkActive="active-item" lines="none" detail="false">
+              <ion-icon aria-hidden="true" slot="start" name="person-outline" color="primary"></ion-icon>
+              <ion-label>Mi Perfil</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <div class="welcome-header">
+            <ion-menu-toggle>
+              <button (click)="realizarCierreSesion()" class="dashboard-logout-btn">
+                <ion-icon name="log-out-outline"></ion-icon>
+                <span>Cerrar Sesión</span>
+              </button>
+            </ion-menu-toggle>
+          </div>
+
+          <hr class="menu-divider" *ngIf="appPages && appPages.length > 0" />
+
+          <ion-menu-toggle [autoHide]="false" *ngFor="let p of appPages">
+            <ion-item [routerLink]="[p.url]" routerLinkActive="active-item" lines="none" detail="false">
+              <ion-icon aria-hidden="true" slot="start" [name]="p.icon" color="primary"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>

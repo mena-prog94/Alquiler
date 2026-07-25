@@ -1,0 +1,37 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard" color="light"></ion-back-button>
+      <ion-menu-button color="light"></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="light">Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: rgba(59, 130, 246, 0.15);">
+  <div class="profile-card">
+    <div class="avatar-box">
+      <ion-avatar (click)="ajustarEnfoque($event)">
+        <img [src]="fotoPerfil || 'assets/avatar-usuario.jpg'" [style.object-position]="posicionFoto" />
+      </ion-avatar>
+      
+      <div style="display: flex; gap: 5px; justify-content: center; margin-top: 5px;">
+        <ion-button fill="clear" size="small" (click)="verFotoGrande()">Ver</ion-button>
+        <ion-button fill="clear" size="small" color="danger" (click)="eliminarFoto($event)">Eliminar</ion-button>
+      </div>
+
+      <ion-icon name="camera-outline" class="edit-avatar-icon" (click)="cambiarFoto($event)"></ion-icon>
+    </div>
+    
+    <h2>{{ nombreUsuario }}</h2>
+    
+    <ion-list class="profile-info-list" lines="none">
+      <ion-item>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-label>{{ emailUsuario }}</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" fill="outline" (click)="editarPerfil()">Editar Perfil</ion-button>
+  </div>
+</ion-content>

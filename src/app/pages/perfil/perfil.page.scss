@@ -1,0 +1,188 @@
+/* Fondo oscuro profundo con un degradado sutil */
+.ion-content {
+  --background: linear-gradient(135deg, #090d16 0%, #111827 50%, #1f2937 100%);
+}
+
+/* Cabecera transparente y moderna */
+ion-header {
+  ion-toolbar {
+    --background: transparent;
+    --color: #f8fafc;
+
+    ion-title {
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    ion-back-button, ion-menu-button {
+      color: #f59e0b; /* Color ámbar característico */
+    }
+  }
+}
+
+/* ==========================================
+   TARJETA DE PERFIL PRINCIPAL (GLASSMORPHISM)
+   ========================================== */
+.profile-card {
+  max-width: 450px;
+  margin: 40px auto 20px auto;
+  padding: 30px 20px;
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #f8fafc;
+    margin: 16px 0 6px 0;
+    letter-spacing: -0.5px;
+  }
+}
+
+/* ==========================================
+   CONTENEDOR DE AVATAR Y ACCIONES
+   ========================================== */
+.avatar-box {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+
+  ion-avatar {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 3px solid #f59e0b;
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 30px rgba(245, 158, 11, 0.45);
+    }
+  }
+
+  /* Botón flotante "Ver" miniatura debajo del avatar */
+  ion-button {
+    --color: #94a3b8;
+    font-size: 0.78rem;
+    font-weight: 600;
+    height: 26px;
+    margin: 6px auto 0 auto;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &:hover {
+      --color: #f59e0b;
+    }
+  }
+
+  /* Icono de cámara superpuesto para cambiar foto */
+  .edit-avatar-icon {
+    position: absolute;
+    bottom: 25px;
+    right: 0px;
+    background: #f59e0b;
+    color: #0f172a;
+    font-size: 18px;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+      background: #d97706;
+    }
+  }
+}
+
+/* ==========================================
+   LISTA DE INFORMACIÓN DEL PERFIL
+   ========================================== */
+.profile-info-list {
+  background: transparent !important;
+  margin: 15px 0 25px 0;
+  padding: 0;
+
+  ion-item {
+    background: rgba(30, 41, 59, 0.5) !important;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    margin-bottom: 10px;
+    padding: 4px 12px;
+    transition: all 0.25s ease;
+
+    ion-icon {
+      color: #f59e0b;
+      font-size: 20px;
+      margin-right: 12px;
+    }
+
+    ion-label {
+      color: #cbd5e1 !important;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    &:hover {
+      background: rgba(30, 41, 59, 0.8) !important;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+  }
+}
+
+/* ==========================================
+   BOTÓN DE ACCIÓN (EDITAR PERFIL)
+   ========================================== */
+.profile-card > ion-button[expand="block"] {
+  --background: transparent;
+  --background-hover: rgba(245, 158, 11, 0.1);
+  --color: #f59e0b;
+  --border-color: #f59e0b;
+  --border-width: 1.5px;
+  --border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  height: 48px;
+  letter-spacing: 0.4px;
+  margin-top: 10px;
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Animación de entrada suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

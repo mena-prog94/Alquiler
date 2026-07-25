@@ -1,0 +1,103 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle de Propiedad</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: rgba(59, 130, 246, 0.15);">
+  
+  <div *ngIf="cargando" class="ion-text-center ion-padding" style="margin-top: 50px;">
+    <ion-spinner name="crescent" color="light"></ion-spinner>
+    <p style="color: #ccc; margin-top: 10px;">Buscando datos de la propiedad...</p>
+  </div>
+
+  <div *ngIf="!cargando && vivienda">
+    <ion-card class="vivienda-card">
+      <ion-card-header>
+        <div class="header-inline" style="display: flex; justify-content: space-between; align-items: center;">
+          <ion-card-title class="titulo-codigo" style="font-weight: bold; font-size: 1.4rem;">
+            {{ vivienda.codigo }}
+          </ion-card-title>
+          <span class="badge" [ngClass]="vivienda.estado === 'Disponible' ? 'badge-disponible' : 'badge-rentada'">
+            {{ vivienda.estado }}
+          </span>
+        </div>
+        <ion-card-subtitle class="sub-tipo" style="margin-top: 5px;">
+          {{ vivienda.tipo }}
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="none" class="info-item">
+          <ion-icon name="location-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3 style="font-size: 0.9rem; color: #a0a0a0;">Dirección</h3>
+            <p style="color: #fff; font-size: 1.1rem;">{{ vivienda.direccion }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none" class="info-item" style="margin-top: 10px;">
+          <ion-icon name="cash-outline" slot="start" color="success"></ion-icon>
+          <ion-label>
+            <h3 style="font-size: 0.9rem; color: #a0a0a0;">Precio Mensual</h3>
+            <p style="color: #2dd36f; font-weight: bold; font-size: 1.3rem;">
+              ${{ vivienda.precioMensual }} / Mes
+            </p>
+          </ion-label>
+        </ion-item>
+
+        <div class="features-grid" style="display: flex; gap: 10px; margin-top: 15px;">
+          <div class="feature-box" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: #1e1e1e; padding: 10px; border-radius: 8px;">
+            <ion-icon name="bed-outline" color="primary"></ion-icon>
+            <span style="color: #fff;">{{ vivienda.habitaciones }} Hab.</span>
+          </div>
+          <div class="feature-box" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: #1e1e1e; padding: 10px; border-radius: 8px;">
+            <ion-icon name="water-outline" color="primary"></ion-icon>
+            <span style="color: #fff;">{{ vivienda.banos }} Baños</span>
+          </div>
+        </div>
+
+        <ion-button 
+          expand="block" 
+          color="medium" 
+          fill="outline"
+          class="ion-margin-top font-bold" 
+          [routerLink]="['/vivienda/editar', viviendaId]">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Editar Registro
+        </ion-button>
+
+        <ion-button 
+          *ngIf="vivienda.estado === 'Disponible'" 
+          expand="block" 
+          color="warning" 
+          class="ion-margin-top font-bold" 
+          (click)="rentarDesdeDetalle()">
+          <ion-icon name="key-outline" slot="start"></ion-icon>
+          Rentar Propiedad
+        </ion-button>
+
+        <ion-button 
+          *ngIf="vivienda.estado === 'Rentada'" 
+          expand="block" 
+          color="success" 
+          class="ion-margin-top font-bold" 
+          (click)="liberarDesdeDetalle()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          Liberar Casa (Volver a Rentar)
+        </ion-button>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!cargando && !vivienda" class="ion-text-center ion-padding" style="margin-top: 50px;">
+    <ion-icon name="alert-circle-outline" style="font-size: 3rem; color: var(--ion-color-danger);"></ion-icon>
+    <p style="color: #fff; margin-top: 10px;">La propiedad no pudo ser encontrada o no existe.</p>
+    <ion-button fill="clear" color="primary" routerLink="/dashboard">Volver al Dashboard</ion-button>
+  </div>
+
+</ion-content>

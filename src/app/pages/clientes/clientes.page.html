@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ clienteIdEnEdicion ? 'Editar Cliente' : 'Registrar Cliente' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: rgba(59, 130, 246, 0.15);">
+  <form [formGroup]="clienteForm" (ngSubmit)="guardarCliente()">
+    <ion-item class="custom-input">
+      <ion-label position="stacked">Nombre Completo del Inquilino</ion-label>
+      <ion-input formControlName="nombreCompleto" type="text" placeholder="Nombre y Apellido"></ion-input>
+    </ion-item>
+
+    <div class="ion-row-flex">
+      <ion-item class="custom-input half-width">
+        <ion-label position="stacked">Cédula</ion-label>
+        <ion-input formControlName="cedula" type="text" placeholder="001-0000000-0"></ion-input>
+      </ion-item>
+      <ion-item class="custom-input half-width">
+        <ion-label position="stacked">Teléfono</ion-label>
+        <ion-input formControlName="telefono" type="tel" placeholder="809-555-0123"></ion-input>
+      </ion-item>
+    </div>
+
+    <ion-item class="custom-input">
+      <ion-label position="stacked">Correo Electrónico</ion-label>
+      <ion-input formControlName="correo" type="email" placeholder="inquilino@correo.com"></ion-input>
+    </ion-item>
+
+    <ion-item class="custom-input">
+      <ion-label position="stacked">Vivienda Asignada</ion-label>
+      <ion-select formControlName="viviendaAsignada" placeholder="Selecciona" interface="action-sheet" (ionChange)="verificarEstadoVivienda($event)">
+        <ion-select-option *ngFor="let viv of viviendas" 
+                           [value]="viv.id" 
+                           [disabled]="viv.estado === 'Rentada' && viv.id !== viviendaOriginalId"
+                           [class.option-rentada]="viv.estado === 'Rentada' && viv.id !== viviendaOriginalId">
+          {{ viv.codigo }} - {{ viv.tipo }} {{ (viv.estado === 'Rentada' && viv.id !== viviendaOriginalId) ? '(Ya Esta Rentada)' : '' }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item class="custom-input">
+      <ion-label position="stacked">Tipo de Contrato</ion-label>
+      <ion-select formControlName="tipoContrato">
+        <ion-select-option value="meses">Por Meses</ion-select-option>
+        <ion-select-option value="libre">Libre (Indefinido)</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item class="custom-input" *ngIf="clienteForm.get('tipoContrato')?.value === 'meses'">
+      <ion-label position="stacked">Cantidad de Meses</ion-label>
+      <ion-input formControlName="duracionContrato" type="number" placeholder="Cantidad de Meses"></ion-input>
+    </ion-item>
+
+    <ion-item class="custom-input">
+      <ion-label position="stacked">Depósito ($)</ion-label>
+      <ion-input formControlName="montoDeposito" type="number" placeholder="0.00"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" [disabled]="clienteForm.invalid || cargando" class="ion-margin-top">
+      {{ cargando ? 'Procesando...' : (clienteIdEnEdicion ? 'Actualizar Cambios' : 'Guardar Cliente') }}
+    </ion-button>
+
+    <!-- Botón para cancelar contrato (Solo visible si estamos editando un cliente existente) -->
+    <ion-button *ngIf="clienteIdEnEdicion" expand="block" color="danger" type="button" (click)="cancelarContrato()" [disabled]="cargando" class="ion-margin-top">
+      <ion-icon slot="start" name="trash-outline"></ion-icon>
+      Cancelar Contrato y Liberar Casa
+    </ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,227 @@
+/* Fondo oscuro profundo con un degradado sutil */
+.ion-content {
+  --background: linear-gradient(135deg, #090d16 0%, #111827 50%, #1f2937 100%);
+}
+
+/* Cabecera limpia y moderna */
+ion-header {
+  ion-toolbar {
+    --background: #0f172a;
+    --color: #f8fafc;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    ion-title {
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    ion-back-button {
+      color: #f59e0b; /* Color ámbar característico */
+    }
+  }
+}
+
+/* ==========================================
+   TARJETA PRINCIPAL (GLASSMORPHISM)
+   ========================================== */
+.vivienda-card {
+  max-width: 500px;
+  margin: 10px auto;
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.5s ease-in-out;
+  overflow: hidden;
+
+  ion-card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px 20px 14px 20px;
+
+    .titulo-codigo {
+      color: #f8fafc !important;
+      font-size: 1.5rem !important;
+      letter-spacing: -0.5px;
+    }
+
+    .sub-tipo {
+      color: #94a3b8 !important;
+      font-size: 0.9rem !important;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+/* ==========================================
+   BADGES DE ESTADO (DISPONIBLE / RENTADA)
+   ========================================== */
+.badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.badge-disponible {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-rentada {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================
+   ITEMS DE INFORMACIÓN (DIRECCIÓN Y PRECIO)
+   ========================================== */
+.info-item {
+  background: rgba(30, 41, 59, 0.5) !important;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 6px 10px;
+  transition: all 0.25s ease;
+
+  ion-icon {
+    font-size: 24px;
+    margin-right: 14px;
+  }
+
+  ion-label {
+    h3 {
+      font-size: 0.78rem !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8 !important;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    p {
+      color: #f8fafc !important;
+      font-size: 1.05rem !important;
+      font-weight: 600;
+    }
+  }
+
+  &:hover {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+}
+
+/* ==========================================
+   GRILLA DE CARACTERÍSTICAS (HABITACIONES Y BAÑOS)
+   ========================================== */
+.features-grid {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px !important;
+
+  .feature-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(30, 41, 59, 0.6) !important;
+    padding: 12px;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+
+    ion-icon {
+      font-size: 20px;
+      color: #f59e0b !important;
+    }
+
+    span {
+      color: #f8fafc !important;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+  }
+}
+
+/* ==========================================
+   BOTONES DE ACCIÓN UNIFICADOS
+   ========================================== */
+ion-button {
+  --border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  height: 48px;
+  letter-spacing: 0.3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  /* Botón Editar (Outline/Medium) */
+  &[color="medium"] {
+    --border-color: rgba(255, 255, 255, 0.2);
+    --color: #cbd5e1;
+    --background-hover: rgba(255, 255, 255, 0.05);
+
+    &:hover {
+      --border-color: #f59e0b;
+      --color: #f59e0b;
+    }
+  }
+
+  /* Botón Rentar (Warning) */
+  &[color="warning"] {
+    --background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --color: #0f172a;
+    --box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+
+    &:hover {
+      box-shadow: 0 12px 25px rgba(245, 158, 11, 0.4);
+    }
+  }
+
+  /* Botón Liberar (Success) */
+  &[color="success"] {
+    --background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --color: #ffffff;
+    --box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+
+    &:hover {
+      box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4);
+    }
+  }
+}
+
+/* Animación de entrada suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

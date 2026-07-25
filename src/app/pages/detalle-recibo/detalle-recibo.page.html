@@ -1,0 +1,100 @@
+<ion-header class="ion-no-border no-print">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/recibos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del Recibo</ion-title>
+  </ion-toolbar>
+</ion-header>
+<link rel="stylesheet" href="detalle-recibo.page.scss">
+<ion-content style="--background: rgba(59, 130, 246, 0.15);">
+  
+  <div *ngIf="recibo; else noEncontrado" id="print-section">
+    
+    <!-- Encabezado del Recibo -->
+    <ion-card class="status-card">
+      <ion-card-content style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <p class="recibo-code">Recibo emitido por: <strong>Maria Aquino</strong></p>
+        <p class="recibo-code">Número de Factura: <strong>{{ recibo.numeroFactura }}</strong></p>
+        <h2 style="margin: 10px 0;">${{ recibo.monto | number:'1.2-2' }}</h2>
+        
+        <ion-badge [color]="recibo.estadoPago === 'pagado' ? 'success' : 'danger'">
+          {{ recibo.estadoPago === 'pagado' ? 'FACTURA PAGADA' : 'PENDIENTE DE PAGO' }}
+        </ion-badge>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Datos del Cliente -->
+    <h5 class="section-title"><ion-icon name="person-outline"></ion-icon> Datos del Inquilino</h5>
+    <ion-card class="info-card">
+      <ion-item lines="none">
+        <ion-label>
+          <p>Nombre Completo</p>
+          <h3>{{ recibo.nombreCliente }}</h3>
+        </ion-label>
+      </ion-item>
+    </ion-card>
+
+    <!-- Detalles del Inmueble y Fechas -->
+    <h5 class="section-title"><ion-icon name="home-outline"></ion-icon> Detalles del Inmueble</h5>
+    <ion-card class="info-card">
+      <ion-item lines="none">
+        <ion-label>
+          <p>Inmueble Asignado</p>
+          <h3>{{ recibo.vivienda }}</h3>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>
+          <p>Fecha de Emisión</p>
+          <!-- Se usa toDate() por si Firestore devuelve un Timestamp de Firebase -->
+          <h3>{{ recibo.fechaEmision?.toDate ? (recibo.fechaEmision.toDate() | date:'dd/MM/yyyy') : (recibo.fechaEmision | date:'dd/MM/yyyy') }}</h3>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>
+          <p>Fecha de Vencimiento</p>
+          <!-- Corregido a fechaVence y soporte seguro para Timestamp -->
+          <h3>{{ recibo.fechaVence?.toDate ? (recibo.fechaVence.toDate() | date:'dd/MM/yyyy') : (recibo.fechaVence | date:'dd/MM/yyyy') }}</h3>
+        </ion-label>
+      </ion-item>
+    </ion-card>
+
+    <div class="signatures-wrapper" style="display: flex; justify-content: space-between; margin-top: 100px;">
+      <!-- Firma Cliente (A la izquierda) -->
+      <div class="signature-container" style="text-align: center; width: 45%;">
+        <p><strong>{{ recibo.nombreCliente }}</strong></p>
+        <div class="signature-line" style="border-top: 2px solid #000; width: 100%; margin-bottom: 10px;"></div>
+        <p>Firma Cliente</p>
+      </div>
+
+      <!-- Firma Maria Aquino (A la derecha) -->
+      <div class="signature-container" style="text-align: center; width: 45%;">
+        <p><strong>Maria Aquino</strong></p>
+        <div class="signature-line" style="border-top: 2px solid #000; width: 100%; margin-bottom: 10px;"></div>
+        <p>Firma Administradora</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="action-buttons no-print">
+    <ion-button expand="block" class="btnre" (click)="confirmarRegistroPago()" *ngIf="recibo?.estadoPago !== 'pagado'">
+      <ion-icon name="cash-outline" slot="start"></ion-icon> REGISTRAR PAGO
+    </ion-button>
+
+    <div *ngIf="recibo?.estadoPago === 'pagado'">
+      <ion-button expand="block" color="success" (click)="compartirWhatsApp()">
+        <ion-icon name="logo-whatsapp" slot="start"></ion-icon> WHATSAPP
+      </ion-button>
+      <ion-button expand="block" color="medium" (click)="imprimirRecibo()">
+        <ion-icon name="print-outline" slot="start"></ion-icon> IMPRIMIR
+      </ion-button>
+    </div>
+  </div>
+
+  <ng-template #noEncontrado>
+    <div class="ion-text-center">Cargando recibo...</div>
+  </ng-template>
+</ion-content>

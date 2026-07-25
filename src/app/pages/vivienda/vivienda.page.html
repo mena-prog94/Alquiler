@@ -1,0 +1,83 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ modoEdicion ? 'Editar Vivienda' : 'Registrar Vivienda' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: rgba(59, 130, 246, 0.15);">
+  <div class="form-header">
+    <ion-icon name="home-outline" class="form-icon"></ion-icon>
+    <p>
+      {{ modoEdicion 
+        ? 'Edita los campos necesarios de la propiedad en el inventario.' 
+        : 'Introduce las especificaciones y precio del inmueble para el inventario de rentas.' 
+      }}
+    </p>
+  </div>
+
+  <form [formGroup]="viviendaForm" (ngSubmit)="gestionarGuardado()">
+    
+    <ion-item lines="none" class="custom-input">
+      <ion-label position="stacked">Código / Identificador</ion-label>
+      <ion-input formControlName="codigo" type="text" placeholder="Numero de casa"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none" class="custom-input">
+      <ion-label position="stacked">Tipo de Inmueble</ion-label>
+      <ion-select formControlName="tipo" placeholder="Selecciona uno" interface="action-sheet">
+        <ion-select-option value="Apartamento">Apartamento</ion-select-option>
+        <ion-select-option value="Casa">Casa</ion-select-option>
+        <ion-select-option value="Local Comercial">Local Comercial</ion-select-option>
+        <ion-select-option value="Estudio">Estudio / Loft</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item lines="none" class="custom-input">
+      <ion-label position="stacked">Dirección Completa</ion-label>
+      <ion-textarea formControlName="direccion" placeholder="Calle, Número, Sector y Referencia..." rows="2"></ion-textarea>
+    </ion-item>
+
+    <div class="ion-row-flex">
+      <ion-item lines="none" class="custom-input half-width">
+        <ion-label position="stacked">Precio Mensual ($)</ion-label>
+        <ion-input formControlName="precioMensual" type="number" placeholder="0.00"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="custom-input half-width">
+        <ion-label position="stacked">Estado Inicial</ion-label>
+        <ion-select formControlName="estado" placeholder="Estado" interface="popover">
+          <ion-select-option value="Disponible">Disponible</ion-select-option>
+          <ion-select-option value="Rentada">Rentada</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <div class="ion-row-flex">
+      <ion-item lines="none" class="custom-input half-width">
+        <ion-label position="stacked">Habitaciones</ion-label>
+        <ion-input formControlName="habitaciones" type="number" placeholder="0"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="custom-input half-width">
+        <ion-label position="stacked">Baños</ion-label>
+        <ion-input formControlName="banos" type="number" placeholder="0"></ion-input>
+      </ion-item>
+    </div>
+
+    <ion-button expand="block" type="submit" [disabled]="!viviendaForm.valid || cargando" class="btn-success ion-margin-top">
+      <ion-icon [name]="modoEdicion ? 'save-outline' : 'cloud-upload-outline'" slot="start"></ion-icon>
+      {{ cargando ? 'Guardando...' : (modoEdicion ? 'Actualizar Propiedad' : 'Dar de Alta Vivienda') }}
+    </ion-button>
+  </form>
+
+  <div *ngIf="!modoEdicion && viviendaForm.get('estado')?.value === 'Disponible' && viviendaForm.valid" class="rentar-container ion-margin-top">
+    <ion-button expand="block" color="warning" (click)="rentarViviendaDirectamente()">
+      <ion-icon name="key-outline" slot="start"></ion-icon>
+      Rentar esta Vivienda
+    </ion-button>
+  </div>
+
+</ion-content>

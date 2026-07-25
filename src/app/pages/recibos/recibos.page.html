@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Historial de Cobros</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: rgba(59, 130, 246, 0.15);">
+  <div class="header-section" style="margin-bottom: 20px;">
+    <h2>Gestión de Mensualidades</h2>
+    <p>Estado actual de las facturas.</p>
+  </div>
+
+  <ion-list lines="none">
+    <ion-card *ngFor="let recibo of recibos" class="recibo-card">
+      <ion-card-content>
+        <div class="recibo-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="recibo-id" style="font-weight: bold;">{{ recibo.numeroFactura }}</span>
+          <ion-badge [color]="getEstadoVencimiento(recibo).color">
+            {{ getEstadoVencimiento(recibo).texto }}
+          </ion-badge>
+        </div>
+
+        <div class="recibo-body" style="margin-top: 10px;">
+          <!-- Fallback: si nombreCliente es undefined, muestra 'Cargando nombre' -->
+          <h3>{{ recibo.nombreCliente || 'Cargando nombre' }}</h3>
+          <p><strong>Inmueble:</strong> {{ recibo.vivienda }}</p>
+          <p><strong>Monto:</strong> ${{ recibo.monto | number:'1.2-2' }}</p>
+          <p><strong>Vence:</strong> {{ recibo.fechaVence?.toDate() | date:'dd/MM/yyyy' }}</p>
+        </div>
+
+        <div class="recibo-footer" style="margin-top: 15px; display: flex; gap: 10px;">
+          <ion-button size="small" fill="clear" color="medium" (click)="verDetalles(recibo)">
+            <ion-icon name="eye-outline" slot="start"></ion-icon> Detalles
+          </ion-button>
+          
+          <ion-button *ngIf="recibo.estadoPago !== 'pagado'" 
+            size="small" fill="outline" color="success" (click)="marcarComoPagado(recibo)">
+            <ion-icon name="cash-outline" slot="start"></ion-icon>
+            Registrar Pago
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,185 @@
+/* Fondo oscuro profundo con un degradado sutil */
+.ion-content {
+  --background: linear-gradient(135deg, #090d16 0%, #111827 50%, #1f2937 100%);
+}
+
+/* Cabecera limpia y moderna */
+ion-header {
+  ion-toolbar {
+    --background: #0f172a;
+    --color: #f8fafc;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    ion-title {
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    ion-back-button {
+      color: #f59e0b; /* Color ámbar característico */
+    }
+  }
+}
+
+/* Encabezado del formulario con icono temático */
+.form-header {
+  text-align: center;
+  margin-bottom: 24px;
+  animation: fadeIn 0.5s ease-in-out;
+
+  .form-icon {
+    font-size: 42px;
+    color: #f59e0b;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 10px rgba(245, 158, 11, 0.3));
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin: 0 auto;
+    max-width: 380px;
+    line-height: 1.4;
+  }
+}
+
+/* ==========================================
+   ESTRUCTURA DEL FORMULARIO Y FILAS FLEXIBLES
+   ========================================== */
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Contenedor flexible para inputs en paralelo (Precio/Estado, Habitaciones/Baños) */
+.ion-row-flex {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+
+  .half-width {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* ==========================================
+   INPUTS ULTRA DINÁMICOS Y TARJETAS DE CAMPO
+   ========================================== */
+.custom-input {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 16px;
+  padding: 4px 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+
+  /* Estilo para las etiquetas de Ionic (position="stacked") */
+  ion-label {
+    color: #94a3b8 !important;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    transition: color 0.3s ease;
+  }
+
+  /* Estilo interno para inputs, selects y textareas de Ionic */
+  ion-input, ion-select, ion-textarea {
+    --color: #ffffff;
+    --placeholder-color: #64748b;
+    font-size: 0.95rem;
+  }
+
+  /* Efecto Hover: se ilumina ligeramente y se eleva */
+  &:hover {
+    background: rgba(17, 24, 39, 0.95);
+    border-color: rgba(245, 158, 11, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Efecto Focus (Cuando escribes o seleccionas): brillo ámbar y elevación */
+  &:focus-within {
+    background: rgba(15, 23, 42, 0.98);
+    border-color: #f59e0b;
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2), 0 8px 20px rgba(0, 0, 0, 0.3);
+
+    ion-label {
+      color: #f59e0b !important;
+    }
+  }
+}
+
+/* ==========================================
+   BOTONES DE ACCIÓN PRINCIPALES Y SECUNDARIOS
+   ========================================== */
+.btn-success {
+  --background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --background-hover: linear-gradient(135deg, #d97706 100%, #b45309 100%);
+  --color: #0f172a;
+  --border-radius: 16px;
+  --box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);
+  font-weight: 700;
+  font-size: 1rem;
+  height: 50px;
+  letter-spacing: 0.4px;
+  margin-top: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(245, 158, 11, 0.45);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Botón secundario para rentar directamente */
+.rentar-container {
+  max-width: 500px;
+  margin: 0 auto;
+
+  ion-button {
+    --background: rgba(16, 185, 129, 0.15);
+    --background-hover: rgba(16, 185, 129, 0.25);
+    --color: #10b981;
+    --border-radius: 16px;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: rgba(16, 185, 129, 0.4);
+    font-weight: 700;
+    font-size: 0.95rem;
+    height: 50px;
+    transition: all 0.25s ease;
+
+    &:hover {
+      --border-color: #10b981;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+/* Animación de entrada suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
