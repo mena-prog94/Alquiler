@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { IonicModule, ToastController, AlertController, LoadingController } from '@ionic/angular'; 
 import { AuthService } from '../../service/auth'; // Ajusta la ruta exacta a tu servicio
-import { addIcons } from 'ionicons';
-import { mailOutline, lockClosedOutline, homeOutline } from 'ionicons/icons';
+import { addIcons,  } from 'ionicons';
+import { mailOutline, lockClosedOutline, personCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +34,7 @@ export class LoginPage {
     addIcons({ 
       'mail-outline': mailOutline,
       'lock-closed-outline': lockClosedOutline,
-      'home-outline': homeOutline 
+      'person-circle-outline': personCircleOutline 
     });
   }
 
