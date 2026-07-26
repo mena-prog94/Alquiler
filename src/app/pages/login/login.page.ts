@@ -14,8 +14,8 @@ import { mailOutline, lockClosedOutline, personCircleOutline } from 'ionicons/ic
   standalone: true, 
   imports: [
     CommonModule, 
-    FormsModule,     
-    IonicModule,     
+    FormsModule,    
+    IonicModule,    
     RouterModule
   ]
 })
@@ -53,7 +53,12 @@ export class LoginPage {
       
       // Manejo amigable de errores comunes de Firebase
       let mensajeError = 'Credenciales incorrectas o error de conexión.';
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+      
+      if (error.code === 'auth/wrong-password') {
+        mensajeError = 'La contraseña es incorrecta.';
+      } else if (error.code === 'auth/user-not-found') {
+        mensajeError = 'El usuario no está registrado.';
+      } else if (error.code === 'auth/invalid-credential') {
         mensajeError = 'El correo o la contraseña son incorrectos.';
       } else if (error.code === 'auth/invalid-email') {
         mensajeError = 'El formato del correo electrónico no es válido.';
