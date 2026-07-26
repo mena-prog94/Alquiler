@@ -2,10 +2,10 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
-import { IonicModule, ToastController, AlertController } from '@ionic/angular'; 
+import { IonicModule, ToastController, AlertController, LoadingController } from '@ionic/angular'; 
 import { AuthService } from '../../service/auth'; // Ajusta la ruta exacta a tu servicio
 import { addIcons } from 'ionicons';
-import { mailOutline, lockClosedOutline, personCircleOutline } from 'ionicons/icons';
+import { mailOutline, lockClosedOutline, homeOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
@@ -14,8 +14,8 @@ import { mailOutline, lockClosedOutline, personCircleOutline } from 'ionicons/ic
   standalone: true, 
   imports: [
     CommonModule, 
-    FormsModule,     
-    IonicModule,     
+    FormsModule,    
+    IonicModule,    
     RouterModule
   ]
 })
@@ -28,12 +28,13 @@ export class LoginPage {
   private toastCtrl = inject(ToastController);
   private alertCtrl = inject(AlertController);
   private authService = inject(AuthService);
+  private loadingCtrl = inject(LoadingController); // Inyectado para mostrar el indicador de carga
 
   constructor() {
     addIcons({ 
       'mail-outline': mailOutline,
       'lock-closed-outline': lockClosedOutline,
-      'person-circle-outline': personCircleOutline 
+      'home-outline': homeOutline 
     });
   }
 
@@ -43,12 +44,23 @@ export class LoginPage {
       return;
     }
 
+    // Crear y presentar el indicador de carga
+    const loading = await this.loadingCtrl.create({
+      message: 'Iniciando sesión...',
+      spinner: 'crescent',
+      cssClass: 'custom-loading'
+    });
+    await loading.present();
+
     try {
       // Intentar iniciar sesión con Firebase Auth
       await this.authService.login(this.email.trim(), this.password.trim());
+      await loading.dismiss(); // Ocultar carga al tener éxito
+      
       this.presentToast('¡Bienvenido de nuevo!', 'success');
       this.router.navigate(['/dashboard']); // Redirección al Home
     } catch (error: any) {
+      await loading.dismiss(); // Ocultar carga si ocurre un error
       console.error('Error en Login Firebase:', error);
       
       // Manejo amigable de errores comunes de Firebase

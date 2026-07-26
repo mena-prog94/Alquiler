@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { 
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons,
   IonBackButton, IonItem, IonLabel, IonInput, IonSelect,
-  IonSelectOption, IonButton, IonIcon, ToastController, AlertController
+  IonSelectOption, IonButton, IonIcon, ToastController, AlertController, LoadingController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personAddOutline, saveOutline, imageOutline, documentTextOutline, createOutline, trashOutline } from 'ionicons/icons';
@@ -35,13 +35,14 @@ export class ClientesPage implements OnInit, OnDestroy {
   clienteIdEnEdicion: string | null = null;
   viviendaOriginalId: string | null = null;
 
-  // Inyección moderna de Firestore mediante AngularFire
+  // Inyección moderna de Firestore y controladores mediante AngularFire
   private firestore = inject(Firestore);
   private toastController = inject(ToastController);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private toastCtrl = inject(ToastController);
   private alertCtrl = inject(AlertController);
+  private loadingCtrl = inject(LoadingController); // Inyectado para el indicador de carga
 
   constructor() {
     addIcons({ personAddOutline, saveOutline, imageOutline, documentTextOutline, createOutline, trashOutline });
@@ -110,6 +111,15 @@ export class ClientesPage implements OnInit, OnDestroy {
 
   async guardarCliente() {
     if (this.clienteForm.invalid) return;
+
+    // Crear y presentar el indicador de carga
+    const loading = await this.loadingCtrl.create({
+      message: this.clienteIdEnEdicion ? 'Actualizando cliente...' : 'Registrando cliente y factura...',
+      spinner: 'crescent',
+      cssClass: 'custom-loading'
+    });
+    await loading.present();
+
     this.cargando = true;
 
     try {
@@ -147,6 +157,7 @@ export class ClientesPage implements OnInit, OnDestroy {
           estado: 'Rentada'
         });
 
+        await loading.dismiss();
         await this.mostrarToast('Cliente registrado y factura de depósito generada', 'success');
       } else {
         const clienteRef = doc(this.firestore, `clientes/${this.clienteIdEnEdicion}`);
@@ -167,10 +178,19 @@ export class ClientesPage implements OnInit, OnDestroy {
           });
         }
 
+        await loading.dismiss();
         await this.mostrarToast('Datos del cliente actualizados', 'success');
       }
+
+      // Limpiar formulario y variables auxiliares tras guardar con éxito
+      this.clienteForm.reset({ tipoContrato: 'meses' });
+      this.imagenContratoB64 = null;
+      this.clienteIdEnEdicion = null;
+      this.viviendaOriginalId = null;
+
       this.router.navigate(['/recibos']);
     } catch (error) {
+      await loading.dismiss();
       console.error(error);
       await this.mostrarToast('Error al procesar el registro', 'danger');
     } finally {
@@ -189,6 +209,13 @@ export class ClientesPage implements OnInit, OnDestroy {
         {
           text: 'Sí, Cancelar Contrato',
           handler: async () => {
+            const loading = await this.loadingCtrl.create({
+              message: 'Cancelando contrato...',
+              spinner: 'crescent',
+              cssClass: 'custom-loading'
+            });
+            await loading.present();
+
             this.cargando = true;
             try {
               const viviendaIdALiberar = this.viviendaOriginalId || this.clienteForm.get('viviendaAsignada')?.value;
@@ -204,9 +231,11 @@ export class ClientesPage implements OnInit, OnDestroy {
                 viviendaAsignada: null
               });
 
+              await loading.dismiss();
               await this.mostrarToast('Contrato cancelado y vivienda liberada', 'success');
               this.router.navigate(['/recibos']);
             } catch (error) {
+              await loading.dismiss();
               console.error(error);
               await this.mostrarToast('Error al cancelar el contrato', 'danger');
             } finally {

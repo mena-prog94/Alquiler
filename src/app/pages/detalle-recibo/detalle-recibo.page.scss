@@ -109,9 +109,10 @@ ion-badge {
         margin-bottom: 2px;
       }
 
+      /* Letras naranjas y más grandes para los valores de información */
       h3 {
-        font-size: 1.05rem;
-        color: #f8fafc;
+        font-size: 1.15rem;
+        color: #f59e0b;
         font-weight: 600;
         margin: 0;
       }
@@ -269,6 +270,7 @@ ion-badge {
     transform: translateY(0);
   }
 }
+
 .btnre{
   margin-top: 26px;
   --background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);

@@ -107,9 +107,10 @@ ion-header {
       margin-bottom: 2px;
     }
 
+    /* Letras naranjas y más grandes para los detalles */
     p {
-      font-size: 0.98rem;
-      color: #f8fafc;
+      font-size: 1.15rem;
+      color: #f59e0b;
       font-weight: 600;
     }
   }
@@ -140,15 +141,16 @@ ion-header {
       font-size: 0.9rem;
     }
 
+    /* Valores de factura más grandes y en color naranja */
     strong {
-      color: #f8fafc;
-      font-size: 0.95rem;
+      color: #f59e0b;
+      font-size: 1.15rem;
       font-weight: 600;
     }
 
     .price-text {
       color: #10b981;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       font-weight: 800;
     }
   }

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { 
   IonContent, IonList, IonBadge, IonButton, IonButtons, IonIcon, 
   IonCard, IonCardContent, AlertController, IonTitle, 
-  IonBackButton, IonToolbar, IonHeader, ToastController,
+  IonBackButton, IonToolbar, IonHeader, ToastController, LoadingController,
   IonItem, IonLabel, IonNote 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -35,15 +35,15 @@ import { Firestore, collection, doc, updateDoc, getDocs, addDoc, getDoc, onSnaps
   ]
 })
 export class RecibosPage implements OnInit, OnDestroy {
-  // Inyección moderna de Firestore
+  // Inyección moderna de Firestore y controladores
   private firestore = inject(Firestore);
+  private alertController = inject(AlertController);
+  private toastCtrl = inject(ToastController);
+  private loadingCtrl = inject(LoadingController); // Inyectado para el indicador de carga
+  private router = inject(Router);
   
   recibos: any[] = [];
   private unsubscribe: Unsubscribe | null = null;
-
-  private alertController = inject(AlertController);
-  private toastCtrl = inject(ToastController);
-  private router = inject(Router);
 
   constructor() {
     addIcons({ receiptOutline, cashOutline, alertCircleOutline, eyeOutline });
@@ -87,24 +87,43 @@ export class RecibosPage implements OnInit, OnDestroy {
         {
           text: 'Sí, Pagar',
           handler: async () => {
+            // Crear y presentar el indicador de carga
+            const loading = await this.loadingCtrl.create({
+              message: 'Registrando pago...',
+              spinner: 'crescent',
+              cssClass: 'custom-loading'
+            });
+            await loading.present();
+
             try {
               const docRef = doc(this.firestore, 'facturas', recibo.id);
               await updateDoc(docRef, { estadoPago: 'pagado' });
 
               if (recibo.tipo === 'deposito' && recibo.clienteId) {
                 await this.generarFacturaMensualTrasDeposito(recibo);
+                await loading.dismiss();
+
                 const toast = await this.toastCtrl.create({ 
                   message: 'Depósito registrado y factura mensual generada.', 
                   duration: 3000, 
                   color: 'success' 
                 });
                 await toast.present();
+              } else {
+                await loading.dismiss();
               }
 
               this.router.navigate(['/detalle-recibo', recibo.id]);
 
             } catch (error) {
+              await loading.dismiss();
               console.error("Error al procesar pago:", error);
+              const toast = await this.toastCtrl.create({ 
+                message: 'Error al procesar el pago.', 
+                duration: 3000, 
+                color: 'danger' 
+              });
+              await toast.present();
             }
           }
         }

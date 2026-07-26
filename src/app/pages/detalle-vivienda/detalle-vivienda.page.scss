@@ -97,6 +97,7 @@ ion-header {
   ion-icon {
     font-size: 24px;
     margin-right: 14px;
+    color: #f59e0b;
   }
 
   ion-label {
@@ -109,9 +110,10 @@ ion-header {
       margin-bottom: 2px;
     }
 
+    /* Letras naranjas y más grandes para la información */
     p {
-      color: #f8fafc !important;
-      font-size: 1.05rem !important;
+      color: #f59e0b !important;
+      font-size: 1.15rem !important;
       font-weight: 600;
     }
   }
@@ -147,9 +149,10 @@ ion-header {
       color: #f59e0b !important;
     }
 
+    /* Letras naranjas y más grandes para los valores de la grilla */
     span {
-      color: #f8fafc !important;
-      font-size: 0.92rem;
+      color: #f59e0b !important;
+      font-size: 1.15rem;
       font-weight: 600;
     }
 
