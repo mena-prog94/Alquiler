@@ -73,22 +73,12 @@ export class ViviendaPage implements OnInit {
       return null;
     }
 
-    // Crear y presentar el indicador de carga
-    const loading = await this.loadingCtrl.create({
-      message: this.modoEdicion ? 'Actualizando propiedad...' : 'Guardando propiedad...',
-      spinner: 'crescent',
-      cssClass: 'custom-loading'
-    });
-    await loading.present();
-
     this.cargando = true;
     try {
       if (this.modoEdicion && this.viviendaId) {
         // Uso de la instancia inyectada para actualizar
         const docRef = doc(this.firestore, 'viviendas', this.viviendaId);
         await updateDoc(docRef, this.viviendaForm.value);
-        await loading.dismiss();
-        
         this.mostrarMensaje('Propiedad actualizada correctamente.', 'success');
         return this.viviendaId;
       } else {
@@ -100,19 +90,12 @@ export class ViviendaPage implements OnInit {
           registradoPor: usuarioAuth?.uid,
           fechaRegistro: new Date()
         });
-        await loading.dismiss();
-
         this.mostrarMensaje('Propiedad guardada con éxito.', 'success');
-        
-        // Limpiar formulario y restablecer estados tras un registro exitoso de vivienda nueva
-        this.viviendaForm.reset({ estado: 'Disponible' });
-        this.viviendaId = null;
-        this.modoEdicion = false;
-
+        this.viviendaId = nuevoDoc.id;
+        this.modoEdicion = true;
         return nuevoDoc.id;
       }
     } catch (error) {
-      await loading.dismiss();
       console.error(error);
       this.mostrarMensaje('Error al procesar el guardado.', 'danger');
       return null;
@@ -126,8 +109,7 @@ export class ViviendaPage implements OnInit {
    */
   async gestionarGuardado() {
     const id = await this.guardarVivienda();
-    // Si estaba editando y guardó, redirigimos. Si era nuevo, se limpiaron los inputs y se queda en la vista.
-    if (id && this.modoEdicion) {
+    if (id) {
       this.router.navigate(['/viviendas']); 
     }
   }
@@ -141,10 +123,15 @@ export class ViviendaPage implements OnInit {
       return;
     }
 
+    const loading = await this.loadingCtrl.create({ message: 'Procesando...', cssClass: 'custom-loading' });
+    await loading.present();
+
     let idVivienda = this.viviendaId;
     if (!idVivienda) {
       idVivienda = await this.guardarVivienda();
     }
+
+    await loading.dismiss();
 
     if (idVivienda) {
       this.router.navigate(['/clientes'], { 

@@ -6,7 +6,7 @@ import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, 
   IonCard, IonCardContent, IonBadge, IonItem, IonLabel, IonButton, IonIcon 
 } from '@ionic/angular/standalone';
-import { AlertController, ToastController, LoadingController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 
 // Importación correcta de AngularFire Firestore
@@ -28,12 +28,12 @@ import {
   ]
 })
 export class DetalleReciboPage implements OnInit {
-  // Inyección moderna de Firestore y controladores
+  // Inyección moderna de Firestore
   private firestore = inject(Firestore);
+
   private route = inject(ActivatedRoute);
   private alertCtrl = inject(AlertController);
   private toastCtrl = inject(ToastController);
-  private loadingCtrl = inject(LoadingController); // Inyectado para el indicador de carga
   
   recibo: any = null;
 
@@ -46,27 +46,12 @@ export class DetalleReciboPage implements OnInit {
     if (id) await this.cargarDetalleRecibo(id);
   }
 
-  // 1. CARGAMOS EL RECIBO (AngularFire) con indicador de carga
+  // 1. CARGAMOS EL RECIBO (AngularFire)
   async cargarDetalleRecibo(id: string) {
-    const loading = await this.loadingCtrl.create({
-      message: 'Cargando detalle...',
-      spinner: 'crescent',
-      cssClass: 'custom-loading'
-    });
-    await loading.present();
-
-    try {
-      const docRef = doc(this.firestore, 'facturas', id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        this.recibo = { id: docSnap.id, ...docSnap.data() };
-      }
-    } catch (error) {
-      console.error('Error al cargar detalle:', error);
-      const toast = await this.toastCtrl.create({ message: 'Error al obtener el recibo.', duration: 3000, color: 'danger' });
-      await toast.present();
-    } finally {
-      await loading.dismiss();
+    const docRef = doc(this.firestore, 'facturas', id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      this.recibo = { id: docSnap.id, ...docSnap.data() };
     }
   }
 
@@ -88,29 +73,13 @@ export class DetalleReciboPage implements OnInit {
     await alert.present();
   }
 
-  // 2. ACTUALIZAMOS EL PAGO (AngularFire) con indicador de carga
+  // 2. ACTUALIZAMOS EL PAGO (AngularFire)
   async registrarPago() {
-    const loading = await this.loadingCtrl.create({
-      message: 'Registrando pago...',
-      spinner: 'crescent',
-      cssClass: 'custom-loading'
-    });
-    await loading.present();
-
-    try {
-      const docRef = doc(this.firestore, 'facturas', this.recibo.id);
-      await updateDoc(docRef, { estadoPago: 'pagado', fechaPago: new Date() });
-      this.recibo.estadoPago = 'pagado';
-
-      await loading.dismiss();
-      const toast = await this.toastCtrl.create({ message: '¡Pago registrado con éxito!', duration: 2000, color: 'success' });
-      await toast.present();
-    } catch (error) {
-      await loading.dismiss();
-      console.error('Error al registrar pago:', error);
-      const toast = await this.toastCtrl.create({ message: 'Error al procesar el pago.', duration: 3000, color: 'danger' });
-      await toast.present();
-    }
+    const docRef = doc(this.firestore, 'facturas', this.recibo.id);
+    await updateDoc(docRef, { estadoPago: 'pagado', fechaPago: new Date() });
+    this.recibo.estadoPago = 'pagado';
+    const toast = await this.toastCtrl.create({ message: 'Pago registrado!', duration: 2000, color: 'success' });
+    await toast.present();
   }
 
   async compartirWhatsApp() {
