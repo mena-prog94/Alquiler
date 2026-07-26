@@ -66,11 +66,11 @@ form {
     transition: color 0.3s ease;
   }
 
-  /* Estilo interno para inputs y selects de Ionic */
+  /* Estilo interno para inputs, selects y textareas de Ionic (Letras naranjas y más grandes) */
   ion-input, ion-select, ion-textarea {
-    --color: #ffffff;
+    --color: #f59e0b; /* Color naranja ámbar */
     --placeholder-color: #64748b;
-    font-size: 0.95rem;
+    font-size: 1.15rem; /* Tamaño de letra más grande */
   }
 
   /* Efecto Hover: se ilumina ligeramente y se eleva */

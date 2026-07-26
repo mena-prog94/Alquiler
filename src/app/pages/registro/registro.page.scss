@@ -99,11 +99,11 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(0);
 
-  /* Estilo interno del input de Ionic */
+  /* Estilo interno del input de Ionic (Letras naranjas y más grandes) */
   ion-input {
-    --color: #ffffff;
+    --color: #f59e0b;
     --placeholder-color: #64748b;
-    font-size: 0.95rem;
+    font-size: 1.15rem;
   }
 
   .input-icon {
