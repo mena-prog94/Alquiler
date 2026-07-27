@@ -7,16 +7,20 @@ import {
   IonCard, IonCardContent, IonBadge, IonItem, IonLabel, IonButton, IonIcon 
 } from '@ionic/angular/standalone';
 import { AlertController, ToastController } from '@ionic/angular';
-import { Browser } from '@capacitor/browser';
+import { Share } from '@capacitor/share';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 
 // Importación correcta de AngularFire Firestore
-import { Firestore, doc, getDoc, updateDoc, collection, query, where, getDocs, limit } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 
 import { addIcons } from 'ionicons';
 import { 
   personOutline, homeOutline, calendarOutline, logoWhatsapp, 
-  printOutline, documentTextOutline, cashOutline, checkmarkCircleOutline 
+  printOutline, documentTextOutline, cashOutline, checkmarkCircleOutline, shareSocialOutline 
 } from 'ionicons/icons';
+
+// Importar jsPDF para la creación de recibos en PDF
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-detalle-recibo',
@@ -38,7 +42,10 @@ export class DetalleReciboPage implements OnInit {
   recibo: any = null;
 
   constructor() {
-    addIcons({ personOutline, homeOutline, calendarOutline, logoWhatsapp, printOutline, cashOutline, documentTextOutline, checkmarkCircleOutline });
+    addIcons({ 
+      personOutline, homeOutline, calendarOutline, logoWhatsapp, 
+      printOutline, cashOutline, documentTextOutline, checkmarkCircleOutline, shareSocialOutline 
+    });
   }
 
   async ngOnInit() {
@@ -82,48 +89,75 @@ export class DetalleReciboPage implements OnInit {
     await toast.present();
   }
 
+  // 3. GENERAR PDF Y COMPARTIR POR WHATSAPP DIRECTAMENTE
   async compartirWhatsApp() {
     if (!this.recibo) return;
 
     try {
-      // 1. Buscamos al cliente (AngularFire)
-      const clientesRef = collection(this.firestore, 'clientes');
-      const q = query(clientesRef, where('nombreCompleto', '==', this.recibo.nombreCliente), limit(1));
-      const querySnapshot = await getDocs(q);
-      const telefono = !querySnapshot.empty ? querySnapshot.docs[0].data()['telefono'] : null;
+      // Leemos el teléfono directamente del documento actual de la factura
+      const telefono = this.recibo.telefono;
 
       if (!telefono) {
-        alert("No se pudo obtener el teléfono del cliente.");
+        alert("Este recibo no tiene un número de teléfono asociado en la base de datos.");
         return;
       }
 
-      // 2. Convertimos la fecha si existe
+      // Crear documento PDF con jsPDF
+      const docPdf = new jsPDF();
+      
+      docPdf.setFont("helvetica", "bold");
+      docPdf.setFontSize(20);
+      docPdf.text("RECIBO DE PAGO", 105, 20, { align: "center" });
+      
+      docPdf.setFontSize(12);
+      docPdf.setFont("helvetica", "normal");
+      docPdf.text("Maria Aquino", 105, 28, { align: "center" });
+      docPdf.line(20, 35, 190, 35);
+
       let fechaFormateada = "No especificada";
       if (this.recibo.fechaEmision && typeof this.recibo.fechaEmision.toDate === 'function') {
         fechaFormateada = this.recibo.fechaEmision.toDate().toLocaleDateString();
       }
 
-      // 3. Construimos el mensaje
       const vivienda = this.recibo.viviendaAsignada || this.recibo.vivienda || "No especificada";
+      const montoStr = this.recibo.monto ? `$${this.recibo.monto.toFixed(2)}` : '$0.00';
+      const estadoStr = this.recibo.estadoPago === 'pagado' ? 'PAGADO ✅' : 'PENDIENTE ❌';
 
-      const mensaje = `*RECIBO DE PAGO*
-Maria Aquino
---------------------------
+      // Estructura de contenido del PDF
+      docPdf.text(`Número de Factura: ${this.recibo.numeroFactura}`, 20, 50);
+      docPdf.text(`Cliente: ${this.recibo.nombreCliente}`, 20, 60);
+      docPdf.text(`Teléfono: ${telefono}`, 20, 70);
+      docPdf.text(`Casa Asignada: ${vivienda}`, 20, 80);
+      docPdf.text(`Fecha de Emisión: ${fechaFormateada}`, 20, 90);
+      docPdf.text(`Monto: ${montoStr}`, 20, 100);
+      docPdf.text(`Estado: ${estadoStr}`, 20, 110);
+      
+      docPdf.line(20, 120, 190, 120);
+      docPdf.text("Este es un recibo emitido por Maria Aquino.", 105, 135, { align: "center" });
 
-*Factura #:* ${this.recibo.numeroFactura}
-*Cliente:* ${this.recibo.nombreCliente}
-*Casa asignada:* ${vivienda}
-*Fecha de emisión:* ${fechaFormateada}
-*Monto:* $${this.recibo.monto ? this.recibo.monto.toFixed(2) : '0.00'}
-*Estado:* ${this.recibo.estadoPago === 'pagado' ? 'PAGADO ✅' : 'PENDIENTE ❌'}
---------------------------
-Este es un recibo emitido por Maria Aquino.`;
+      // Convertir PDF a Base64
+      const pdfOutput = docPdf.output('datauristring');
+      const base64Data = pdfOutput.split(',')[1];
+      const fileName = `Recibo_${this.recibo.numeroFactura}.pdf`;
 
-      const url = `https://wa.me/${telefono.toString().replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`;
-      await Browser.open({ url: url });
+      // Guardar temporalmente en el dispositivo
+      const savedFile = await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Cache
+      });
+
+      // Compartir nativamente (permite enviar el archivo PDF directo a WhatsApp)
+      await Share.share({
+        title: 'Recibo de Pago',
+        text: `Hola ${this.recibo.nombreCliente}, adjunto aquí tu recibo de pago correspondiente a la factura #${this.recibo.numeroFactura}.`,
+        url: savedFile.uri,
+        dialogTitle: 'Compartir Recibo PDF'
+      });
 
     } catch (error) {
-      console.error("Error al preparar el mensaje:", error);
+      console.error("Error al generar o compartir el PDF por WhatsApp:", error);
+      alert("Hubo un error al procesar el archivo PDF.");
     }
   }
 
