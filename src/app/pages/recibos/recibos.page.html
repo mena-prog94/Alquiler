@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content style="--background: rgba(59, 130, 246, 0.15);">
-  <div class="header-section" style="margin-bottom: 20px;">
+  <div class="header-section" style="margin-bottom: 20px; padding: 16px 16px 0 16px;">
     <h2>Gestión de Mensualidades</h2>
     <p>Estado actual de las facturas.</p>
   </div>
@@ -24,11 +24,12 @@
         </div>
 
         <div class="recibo-body" style="margin-top: 10px;">
-          <!-- Fallback: si nombreCliente es undefined, muestra 'Cargando nombre' -->
           <h3>{{ recibo.nombreCliente || 'Cargando nombre' }}</h3>
+          <p><strong>Tipo:</strong> {{ recibo.tipo | titlecase }}</p>
           <p><strong>Inmueble:</strong> {{ recibo.vivienda }}</p>
           <p><strong>Monto:</strong> ${{ recibo.monto | number:'1.2-2' }}</p>
-          <p><strong>Vence:</strong> {{ recibo.fechaVence?.toDate() | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Emisión:</strong> {{ (recibo.fechaEmision?.toDate ? recibo.fechaEmision.toDate() : recibo.fechaEmision) | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Vence:</strong> {{ (recibo.fechaVence?.toDate ? recibo.fechaVence.toDate() : recibo.fechaVence) | date:'dd/MM/yyyy' }}</p>
         </div>
 
         <div class="recibo-footer" style="margin-top: 15px; display: flex; gap: 10px;">
