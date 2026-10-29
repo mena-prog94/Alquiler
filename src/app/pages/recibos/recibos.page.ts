@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, EnvironmentInjector, runInInjectionContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { 
@@ -31,11 +31,15 @@ import { Firestore, collection, doc, updateDoc, getDocs, addDoc, getDoc, onSnaps
     IonTitle, 
     IonBackButton, 
     IonToolbar, 
-    IonHeader
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonNote
   ]
 })
 export class RecibosPage implements OnInit, OnDestroy {
   private firestore = inject(Firestore);
+  private injector = inject(EnvironmentInjector);
   
   recibos: any[] = [];
   private unsubscribe: Unsubscribe | null = null;
@@ -49,9 +53,12 @@ export class RecibosPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.cargarRecibosTiempoReal();
-    this.verificarVencimientosPendientes();
-    this.verificarYGenerarFacturasMensualesCiclo();
+    // Envolvemos las llamadas dentro del contexto de inyección para prevenir advertencias de AngularFire
+    runInInjectionContext(this.injector, () => {
+      this.cargarRecibosTiempoReal();
+      this.verificarVencimientosPendientes();
+      this.verificarYGenerarFacturasMensualesCiclo();
+    });
   }
 
   ngOnDestroy() {
@@ -93,26 +100,28 @@ export class RecibosPage implements OnInit, OnDestroy {
         { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Sí, Pagar',
-          handler: async () => {
-            try {
-              const docRef = doc(this.firestore, 'facturas', recibo.id);
-              await updateDoc(docRef, { estadoPago: 'pagado' });
+          handler: () => {
+            runInInjectionContext(this.injector, async () => {
+              try {
+                const docRef = doc(this.firestore, 'facturas', recibo.id);
+                await updateDoc(docRef, { estadoPago: 'pagado' });
 
-              if (recibo.tipo === 'deposito' && recibo.clienteId) {
-                await this.generarFacturaMensualTrasDeposito(recibo);
-                const toast = await this.toastCtrl.create({ 
-                  message: 'Depósito registrado y factura mensual generada.', 
-                  duration: 3000, 
-                  color: 'success' 
-                });
-                await toast.present();
+                if (recibo.tipo === 'deposito' && recibo.clienteId) {
+                  await this.generarFacturaMensualTrasDeposito(recibo);
+                  const toast = await this.toastCtrl.create({ 
+                    message: 'Depósito registrado y factura mensual generada.', 
+                    duration: 3000, 
+                    color: 'success' 
+                  });
+                  await toast.present();
+                }
+
+                this.router.navigate(['/detalle-recibo', recibo.id]);
+
+              } catch (error) {
+                console.error("Error al procesar pago:", error);
               }
-
-              this.router.navigate(['/detalle-recibo', recibo.id]);
-
-            } catch (error) {
-              console.error("Error al procesar pago:", error);
-            }
+            });
           }
         }
       ],
